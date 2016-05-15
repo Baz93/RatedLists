@@ -4,8 +4,6 @@ from django.core.urlresolvers import reverse
 from time import time
 from hashlib import md5
 
-from .score_logic.logic import update
-
 
 class List(models.Model):
     title = models.CharField(max_length=120)
@@ -44,7 +42,7 @@ class Item(models.Model):
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
 
     def votes(self):
-        return self.votes_as_first | self.votes_as_second
+        return self.votes_as_first.filter() | self.votes_as_second.filter()
 
     def __str__(self):
         return self.title
@@ -83,9 +81,6 @@ class RatersGroup(models.Model):
         return str(self.id)
 
     def use(self):
-        self.last_use = time()
-        self.save()
-        update(self, Score)
         return self
 
     def relevant_votes(self):
@@ -123,6 +118,9 @@ class Score(models.Model):
     group = models.ForeignKey(RatersGroup, related_name='scores')
     item = models.ForeignKey(Item, related_name='scores')
     value = models.DecimalField(max_digits=8, decimal_places=5, default=0)
+
+    def votes(self):
+        return self.item.votes() & self.group.relevant_votes()
 
     def __str__(self):
         return self.item.title + ': ' + str(self.value) + ' (' + str(self.group) + ')'
