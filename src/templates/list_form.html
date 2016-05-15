@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block head_title %}
+    {{ title }} | {{ block.super }}
+{% endblock head_title %}
+
+{% block content %}
+    <div class='col-sm-6 col-sm-offset-3'>
+        <h1>{{ title }}</h1>
+
+        <form method='POST' action='' enctype='multipart/form-data'>{% csrf_token %}
+            {{ form.as_p }}
+            <input type='submit' class='btn btn-default' value='{{ button }}' />
+            {% if delete %}
+                <a
+                    href='{{ instance.get_delete_url }}'
+                    onclick="return confirm('Are you sure?')"
+                    class="btn btn-default"
+                    role="button"
+                >Delete</a>
+            {% endif %}
+        </form>
+    </div>
+{% endblock content %}

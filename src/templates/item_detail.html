@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block head_title %}
+    {{ instance.title }} | {{ block.super }}
+{% endblock head_title %}
+
+{% block content %}
+    <div class='col-sm-6 col-sm-offset-3'>
+        <h1>
+            {{ instance.title }}
+            {% if is_owner %}
+                <a href='{{ instance.get_edit_url }}' class="btn btn-default" role="button">Edit</a>
+            {% endif %}
+        </h1>
+        From list <a href='{{ instance.list.get_absolute_url }}'>{{ instance.list.title }}</a>
+        <hr/>
+    </div>
+{% endblock content %}

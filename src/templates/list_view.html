@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block head_title %}
+    {{ instance.title }} | {{ block.super }}
+{% endblock head_title %}
+
+{% block content %}
+    <div class='col-sm-6 col-sm-offset-3'>
+        <h1>
+            {{ instance.title }}
+            <a href='{{ instance.get_chart_url }}' class="btn btn-default" role="button">Chart</a>
+            {% if user.is_authenticated %}
+                <a href='{{ instance.get_vote_url }}' class="btn btn-default" role="button">Vote</a>
+            {% endif %}
+            {% if is_owner %}
+                <a href='{{ instance.get_add_url }}' class="btn btn-default" role="button">Add</a>
+                <a href='{{ instance.get_edit_url }}' class="btn btn-default" role="button">Edit List</a>
+            {% endif %}
+        </h1>
+
+        {% for obj in object_list %}
+            <div class="row">
+                <div class="col-md-6"><b><a href='{{ obj.get_absolute_url }}'>{{ obj.title }}</a></b></div>
+                <hr/>
+            </div>
+        {% endfor %}
+
+        <div class="pagination">
+            <span class="step-links">
+                {% if object_list.has_previous %}
+                    <a href="?{{ page_request_var }}={{ object_list.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}.
+                </span>
+
+                {% if object_list.has_next %}
+                    <a href="?{{ page_request_var }}={{ object_list.next_page_number }}">next</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+{% endblock content %}

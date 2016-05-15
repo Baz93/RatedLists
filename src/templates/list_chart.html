@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block head_title %}
+    {{ instance.title }} | {{ block.super }}
+{% endblock head_title %}
+
+{% block content %}
+    <div class='col-sm-6 col-sm-offset-3'>
+        <h1>
+            <a href='{{ instance.get_absolute_url }}'>{{ instance.title }}</a>
+            <a href='{{ instance.get_vote_url }}' class="btn btn-default" role="button">Vote</a>
+            {% if is_owner %}
+                <a href='{{ instance.get_add_url }}' class="btn btn-default" role="button">Add</a>
+            {% endif %}
+        </h1>
+
+        {% for obj in object_list %}
+            <div class="row">
+                <div class="col-md-6"><b><a href='{{ obj.item.get_absolute_url }}'>{{ obj.item.title }}</a></b></div>
+                <div class="col-md-6"><span class="pull-right">{{ obj.value }}</span></div>
+                <hr/>
+            </div>
+        {% endfor %}
+
+        <div class="pagination">
+            <span class="step-links">
+                {% if object_list.has_previous %}
+                    <a href="?{{ page_request_var }}={{ object_list.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}.
+                </span>
+
+                {% if object_list.has_next %}
+                    <a href="?{{ page_request_var }}={{ object_list.next_page_number }}">next</a>
+                {% endif %}
+            </span>
+        </div>
+
+        <h1>Filter Raters</h1>
+        <form method='GET' action='' enctype='multipart/form-data'>
+            {{ form.as_p }}
+            <input type='submit' class='btn btn-default' value='Apply' />
+            <a href="." class="btn btn-default" role="button">Reset</a>
+            {% if user.is_authenticated %}
+                <a href=".?{{ member_var }}={{ user.id }}" class="btn btn-default" role="button">Only you</a>
+            {% endif %}
+        </form>
+    </div>
+{% endblock content %}
